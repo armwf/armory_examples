@@ -1,0 +1,38 @@
+name: sound
+
+env:
+  BLENDER_VERSION: 3.3lts/stable
+
+on:
+  push:
+    paths:
+      - ${{ github.workflow }}/**
+      - .github/workflows/${{ github.workflow }}.yml
+  repository_dispatch:
+    types: [on-demand-test]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  html5:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        exporter: [html5, krom-linux]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        uses: armory3d/armory_gh_actions@v0.1.17
+        with:
+          publish: ${{ matrix.exporter }}
+          blend: ${{ github.workflow }}/${{ github.workflow }}.blend
+          blender: ${{ env.BLENDER_VERSION }}
+      # - name: Deploy gh-pages
+      #   uses: JamesIves/github-pages-deploy-action@v4.4.0
+      #   with:
+      #     branch: gh-pages
+      #     folder: ${{ github.workflow }}/build_${{ github.workflow }}/html5
+      #     target-folder: ${{ github.workflow }}
