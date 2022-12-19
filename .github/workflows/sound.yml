@@ -6,8 +6,8 @@ env:
 on:
   push:
     paths:
-      - ${{ github.workflow }}/**
-      - .github/workflows/${{ github.workflow }}.yml
+      - sound/**
+      - .github/workflows/sound.yml
   repository_dispatch:
     types: [on-demand-test]
   workflow_dispatch:
